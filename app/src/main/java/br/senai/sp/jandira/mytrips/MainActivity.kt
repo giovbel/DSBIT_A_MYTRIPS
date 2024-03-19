@@ -7,6 +7,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -22,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.sharp.Person
@@ -44,6 +46,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -65,7 +68,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     MyTrips()
-                    SignUp()
                 }
             }
         }
@@ -520,6 +522,78 @@ fun MyTrips() {
         }
     }
 
+@Composable fun Home() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Card (
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(230.dp),
+            shape = RectangleShape
+        ){
+               Box(modifier = Modifier) {
+                   Image(
+                       painter = painterResource(id = R.drawable.paisagem),
+                       contentDescription = "Imagem",
+                       modifier = Modifier
+                           .fillMaxHeight()
+                           .fillMaxSize(),
+                       contentScale = ContentScale.Crop
+                   )
+                   Column {
+                       Card(
+                           modifier = Modifier
+                               .width(70.dp)
+                               .height(70.dp)
+                               .offset(x = 300.dp, y = 10.dp),
+                           shape = CircleShape
+                       ) {
+
+                       }
+                       Text(
+                           text = "Susanna Hoffs",
+                           color = Color.White,
+                           modifier =   Modifier
+                               .offset(x = 260.dp, y = 20.dp)
+                           )
+                   }
+                   Column (
+                       modifier = Modifier
+                           .fillMaxHeight()
+                           .padding(bottom = 10.dp, start = 15.dp),
+                       horizontalAlignment = Alignment.CenterHorizontally,
+                       verticalArrangement = Arrangement.Bottom
+                   ){
+                       Row (
+                           modifier = Modifier
+                               .offset(y = 16.dp)
+                       ){
+                           Icon(
+                               imageVector = Icons.Default.LocationOn,
+                               contentDescription = "simbolo do mapa",
+                               tint = Color.White
+                           )
+                           Text(
+                               text = "You're in Paris",
+                               color = Color.White,
+                               fontSize = 15.sp
+                           )
+                       }
+
+                       Text(
+                           text = "My Trips",
+                           color = Color.White,
+                           fontSize = 30.sp,
+                           fontWeight = FontWeight.Bold
+                       )
+                   }
+               }
+        }
+    }
+}
+
     @Preview(showBackground = true, showSystemUi = true)
     @Composable
     fun GreetingPreview() {
@@ -536,3 +610,10 @@ fun SignUpPreview() {
     }
 }
 
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun HomePreview() {
+    MyTripsTheme {
+        Home()
+    }
+}
