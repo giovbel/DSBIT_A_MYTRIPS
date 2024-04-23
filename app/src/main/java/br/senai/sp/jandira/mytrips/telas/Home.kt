@@ -34,41 +34,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.mytrips.R
+import br.senai.sp.jandira.mytrips.repository.Categoria
+import br.senai.sp.jandira.mytrips.repository.TripsRepository
 import br.senai.sp.jandira.mytrips.ui.theme.Poppins
+import br.senai.sp.jandira.mytrips.ui.theme.simplificarData
 
-
-data class categories (
-    val nome: String,
-    val imagem : Int
-)
-
-val listaCategorias = listOf(
-    categories(
-        "Mountain",
-        R.drawable.montain
-    ),
-    categories(
-        "Snow",
-        R.drawable.snow
-    ),
-    categories(
-        "Beach",
-        R.drawable.beach
-    )
-)
-
-
-var count = 0
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(controleDeNavegacao: NavHostController) {
+
+    val categorias = Categoria()
+        .listarTodasAsCategorias(LocalContext.current)
+
+    val viagens = TripsRepository()
+        .listarTodasAsViagens(LocalContext.current)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -162,14 +150,38 @@ fun Home(controleDeNavegacao: NavHostController) {
         }
 
         LazyRow() {
-            items(listaCategorias) { categoria ->
-                count++
+            items(categorias){
+                Card(
+                    modifier = Modifier
+                        .height(92.dp)
+                        .width(135.dp)
+                        .padding(start = 10.dp, top = 12.dp),
+                    colors = CardDefaults
+                        .cardColors(containerColor = Color(0xFFCF06F0))
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    )
+                    {
+                        Image(
+                            painter = it.imagem!!,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(38.dp)
 
-                var color = 0xFFCF06F0
-                if (count > 1){
-                    color = 0xFFEAABF4
+                        )
+                        Text(
+                            text = it.nome,
+                            color = Color.White,
+                            fontFamily = Poppins
+                        )
+                    }
+
                 }
-                categoriasCards(categoria.nome, categoria.imagem, color)
             }
         }
 
@@ -209,7 +221,7 @@ fun Home(controleDeNavegacao: NavHostController) {
         )
 
         LazyColumn(){
-            items(2){
+            items(viagens){
                 Card (
                     modifier = Modifier
                         .fillMaxWidth()
@@ -227,8 +239,8 @@ fun Home(controleDeNavegacao: NavHostController) {
 
                         ){
                         Image(
-                            painter = painterResource(id = R.drawable.londres),
-                            contentDescription = "londres",
+                            painter = it.imagem!!,
+                            contentDescription = "",
                             modifier = Modifier
                                 .fillMaxSize(),
                             contentScale = ContentScale.Crop
@@ -236,14 +248,14 @@ fun Home(controleDeNavegacao: NavHostController) {
                     }
 
                     Text(
-                        text = "London, 2019",
+                        text = "${it.destino}, ${it.dataChegada.year}",
                         modifier = Modifier
                             .padding(5.dp),
                         color = Color(0xFFCF06F0),
                         fontFamily = Poppins
                     )
                     Text(
-                        text = "London is the capital and largest city of  the United Kingdom, with a population of just under 9 million.",
+                        text = it.descricao,
                         fontSize = 13.sp,
                         lineHeight = 13.sp,
                         modifier = Modifier
@@ -252,10 +264,10 @@ fun Home(controleDeNavegacao: NavHostController) {
                         fontFamily = Poppins
                     )
                     Text(
-                        text = "18 Feb - 21 Feb",
+                        text = "${simplificarData(it.dataChegada)}, ${simplificarData(it.dataPartida)}",
                         fontSize = 14.sp,
                         modifier = Modifier
-                            .offset(x = 250.dp)
+                            .offset(x = 220.dp)
                             .padding(top = 7.dp),
                         color = Color(0xFFCF06F0),
                         fontFamily = Poppins
@@ -268,34 +280,5 @@ fun Home(controleDeNavegacao: NavHostController) {
 
 @Composable
 fun categoriasCards(nome: String, imagem: Int, cor: Long) {
-    Card(
-        modifier = Modifier
-            .height(92.dp)
-            .width(135.dp)
-            .padding(start = 10.dp, top = 12.dp),
-        colors = CardDefaults
-            .cardColors(containerColor = Color(cor))
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        )
-        {
-            Image(
-                painter = painterResource(id = imagem),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(38.dp)
 
-            )
-            Text(
-                text = nome,
-                color = Color.White,
-                fontFamily = Poppins
-            )
-        }
-    }
 }

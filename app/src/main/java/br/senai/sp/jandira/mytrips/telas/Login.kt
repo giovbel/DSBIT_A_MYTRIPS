@@ -213,7 +213,7 @@ fun MyTrips(controleDeNavegacao: NavHostController) {
                 modifier = Modifier.clickable { controleDeNavegacao.navigate("signUp") },
                 text = " Sign up",
                 fontSize = 14.sp,
-                color = Color(0xFFCF06F0),
+
                 fontWeight = FontWeight.Bold,
                 fontFamily = Poppins
             )
