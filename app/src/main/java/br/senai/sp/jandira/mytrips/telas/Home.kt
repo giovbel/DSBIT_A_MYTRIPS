@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
@@ -29,6 +30,8 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -56,6 +60,11 @@ fun Home(controleDeNavegacao: NavHostController) {
 
     val viagens = TripsRepository()
         .listarTodasAsViagens(LocalContext.current)
+
+    var searchState = remember {
+        mutableStateOf("")
+    }
+
 
     Column(
         modifier = Modifier
@@ -185,8 +194,10 @@ fun Home(controleDeNavegacao: NavHostController) {
             }
         }
 
-        SearchBar(query = "",
-            onQueryChange = {},
+        SearchBar(query = searchState.value,
+            onQueryChange = {
+                searchState.value = it
+                            },
             onSearch = {},
             active = false,
             onActiveChange = {},
@@ -222,58 +233,61 @@ fun Home(controleDeNavegacao: NavHostController) {
 
         LazyColumn(){
             items(viagens){
-                Card (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp)
-                        .padding(start = 15.dp, end = 15.dp, top = 15.dp),
-                    colors = CardDefaults
-                        .cardColors(containerColor = Color(0xFFFFFFFF)),
-                    elevation = CardDefaults.cardElevation( defaultElevation = 8.dp)
-                ){
-                    Card (
+                if (it.destino.uppercase() == searchState.value.uppercase() || searchState.value == "") {
+                    Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(120.dp)
-                            .padding(start = 8.dp, end = 8.dp, top = 5.dp),
-
-                        ){
-                        Image(
-                            painter = it.imagem!!,
-                            contentDescription = "",
+                            .height(250.dp)
+                            .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                        colors = CardDefaults
+                            .cardColors(containerColor = Color(0xFFFFFFFF)),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                    ) {
+                        Card(
                             modifier = Modifier
-                                .fillMaxSize(),
-                            contentScale = ContentScale.Crop
+                                .fillMaxWidth()
+                                .height(120.dp)
+                                .padding(start = 8.dp, end = 8.dp, top = 5.dp),
+
+                            ) {
+                            Image(
+                                painter = it.imagem!!,
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        Text(
+                            text = "${it.destino}, ${it.dataChegada.year}",
+                            modifier = Modifier
+                                .padding(5.dp),
+                            color = Color(0xFFCF06F0),
+                            fontFamily = Poppins
+                        )
+                        Text(
+                            text = it.descricao,
+                            fontSize = 13.sp,
+                            lineHeight = 13.sp,
+                            modifier = Modifier
+                                .padding(start = 8.dp),
+                            color = Color(0xFFA09C9C),
+                            fontFamily = Poppins
+                        )
+                        Text(
+                            text = "${simplificarData(it.dataChegada)}, ${simplificarData(it.dataPartida)}",
+                            fontSize = 14.sp,
+                            modifier = Modifier
+                                .offset(x = 220.dp)
+                                .padding(top = 7.dp),
+                            color = Color(0xFFCF06F0),
+                            fontFamily = Poppins
                         )
                     }
-
-                    Text(
-                        text = "${it.destino}, ${it.dataChegada.year}",
-                        modifier = Modifier
-                            .padding(5.dp),
-                        color = Color(0xFFCF06F0),
-                        fontFamily = Poppins
-                    )
-                    Text(
-                        text = it.descricao,
-                        fontSize = 13.sp,
-                        lineHeight = 13.sp,
-                        modifier = Modifier
-                            .padding(start = 8.dp),
-                        color = Color(0xFFA09C9C),
-                        fontFamily = Poppins
-                    )
-                    Text(
-                        text = "${simplificarData(it.dataChegada)}, ${simplificarData(it.dataPartida)}",
-                        fontSize = 14.sp,
-                        modifier = Modifier
-                            .offset(x = 220.dp)
-                            .padding(top = 7.dp),
-                        color = Color(0xFFCF06F0),
-                        fontFamily = Poppins
-                    )
                 }
             }
+
         }
     }
 }
