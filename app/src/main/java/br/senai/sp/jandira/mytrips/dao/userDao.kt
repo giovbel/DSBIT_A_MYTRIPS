@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.mytrips.dao
 
+import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -16,5 +17,8 @@ interface userDao {
 
     @Query("SELECT * FROM tbl_usuarios WHERE id = :id")
     fun  buscarUsuarioPeloId(id: Long): Usuario
+
+    @Query("SELECT * FROM tbl_usuarios WHERE email = :email and senha = :senha")
+    fun  logar(email: String, senha: String): Usuario
 
 }
