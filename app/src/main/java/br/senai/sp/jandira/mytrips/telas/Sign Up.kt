@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -45,10 +46,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.mytrips.R
+import br.senai.sp.jandira.mytrips.model.Usuario
+import br.senai.sp.jandira.mytrips.repository.UserRepository
 import br.senai.sp.jandira.mytrips.ui.theme.Poppins
 
 @Composable
 fun SignUp(controleDeNavegacao: NavHostController) {
+
+    val cr = UserRepository(LocalContext.current)
 
     var usuarioState = remember {
         mutableStateOf("")
@@ -333,11 +338,19 @@ fun SignUp(controleDeNavegacao: NavHostController) {
         }
         Button(
             onClick = {
+                //criar um objeto contato
+                val usuario = Usuario(
+                    nome = usuarioState.value,
+                    email = emailState.value,
+                    telefone = phoneState.value,
+                    senha = senhaState.value
+                )
                 if (usuarioState.value == "" || senhaState.value == "" || phoneState.value == "" || emailState.value == ""){
                     isErrorState.value = true
                     mensagemErrorState.value = "Preencha todos os campos"
 
                 } else {
+                    cr.salvar(usuario = usuario)
                     controleDeNavegacao.navigate("login")
                 } },
             modifier = Modifier

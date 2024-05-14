@@ -29,15 +29,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import br.senai.sp.jandira.mytrips.repository.UserRepository
 import br.senai.sp.jandira.mytrips.ui.theme.Poppins
 
 @Composable
 fun MyTrips(controleDeNavegacao: NavHostController) {
+
+    val cr = UserRepository(LocalContext.current)
+    val usuarios = cr.buscarTodosOsUsuarios()
+
+    print(usuarios)
 
     var emailState = remember {
         mutableStateOf("")
@@ -168,12 +175,17 @@ fun MyTrips(controleDeNavegacao: NavHostController) {
             )
         }
         Button(
+
             onClick = {
-                if (emailState.value == "user@gmail.com" && senhaState.value == "1234"){
-                    controleDeNavegacao.navigate("home")
-                } else {
-                    isErrorState.value = true
-                    mensagemErrorState.value = "E-mail ou senha inválidos"
+
+                usuarios.forEach {
+                    if (emailState.value == it.email && senhaState.value == it.senha) {
+                        controleDeNavegacao.navigate("home")
+
+                    } else {
+                        isErrorState.value = true
+                        mensagemErrorState.value = "E-mail ou senha inválidos"
+                    }
                 }
             },
             modifier = Modifier

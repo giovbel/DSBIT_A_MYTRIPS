@@ -47,6 +47,7 @@ import androidx.navigation.NavHostController
 import br.senai.sp.jandira.mytrips.R
 import br.senai.sp.jandira.mytrips.repository.Categoria
 import br.senai.sp.jandira.mytrips.repository.TripsRepository
+import br.senai.sp.jandira.mytrips.repository.UserRepository
 import br.senai.sp.jandira.mytrips.ui.theme.Poppins
 import br.senai.sp.jandira.mytrips.ui.theme.simplificarData
 
@@ -54,6 +55,8 @@ import br.senai.sp.jandira.mytrips.ui.theme.simplificarData
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(controleDeNavegacao: NavHostController) {
+
+    val cr = UserRepository(LocalContext.current)
 
     val categorias = Categoria()
         .listarTodasAsCategorias(LocalContext.current)
